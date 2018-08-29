@@ -1,0 +1,1 @@
+Quick and dirty inventory tool for Windows producing json output.

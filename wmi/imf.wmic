@@ -1,0 +1,121 @@
+# IMF WMIC queries
+# (C) 2018 by Orsiris de Jong
+# http://www.netpower.fr
+# BSD 3-Clause licence
+
+# WMIC classes list as friendlyname and targets
+# wmic alias get FriendlyName,Target
+# wmic alias list brief
+
+# Example get all eventID 18 from system journal
+# wmic ntevent WHERE "LogFile='system' and EventCode='18'" list brief
+# wmic ntevent WHERE "LogFile='system' and EventCode='18'" get Message,EventType,SourceName,TimeGenerated
+
+# MS Examples
+# wmic ntevent where "LogFile='system' and SourceName='W32Time'" get Message, TimeGenerated
+# wmic ntevent where "LogFile='system' and SourceName='W32Time' and Message like '%timesource%'" get Message, TimeGenerated
+# wmic ntevent where "LogFile='system' and SourceName='W32Time' and EventCode!='29'" get TimeGenerated, EventCode, Message
+
+# Queries can be tried in wbemtest.exe
+
+############################################################################################################################
+
+# Computer
+computersystem list full
+
+# Hardware
+cpu list full
+baseboard list full
+systemenclosure list full
+bios list full
+diskdrive list full
+idecontroller list full
+scsicontroller list full
+memcache list full
+nic list full
+onboarddevice list full
+printer list full
+sounddev list full
+systemslot list full
+tapedrive list full
+path win32_videocontroller get /format:list
+/Namespace:\\root\wmi Path WMIMonitorID get /format:list
+
+# Software & configuration
+os get Version, BuildNumber, SerialNumber, SystemDirectory, Organization, RegisteredUser, Caption, CountryCode, CSName, Description, InstallDate, ServicePackMajorVersion, WindowsDirectory, CurrentTimeZone, FreePhysicalMemory, FreeVirtualMemory, LastBootUpTime, NumberOfProcesses, NumberOfUsers, Status /format:List
+desktop list full
+bootconfig list full
+cdrom list full
+desktopmonitor list full
+loadorder list full
+logicaldisk list full /format:list
+partition list full
+diskquota list full
+quotasetting list full
+netprotocol list full
+pagefile list full
+recoveros list full
+registry list full
+sysdriver list full
+timezone list full
+ntdomain list full
+
+# Installed software
+product list full
+
+# Installed updates
+qfe list full
+
+# Antivirus
+/Namespace:\\root\SecurityCenter2 Path AntiVirusProduct get /Format:List
+
+# Current software state
+environment list full
+service list full
+process list full
+server list full
+share list full
+startup list full
+
+# Configuration User / NIC / GPDR dependant
+###################################################### is GPDR, may be anonymized for user data: groups, netlogin, ip adresses
+group WHERE "LocalAccount='TRUE'" list full
+#group WHERE "LocalAccount='FALSE'" list full
+sysaccount list full
+useraccount list full
+# May fail with "Invalid XML content" if usernames contain ugly characters
+netlogin list full
+# On failure we may try:
+netlogin get AccountExpires, AuthorizationFlags, BadpasswordCount, Comment, CountryCode, Description, Flags, FullName, HomeDirectory, HomeDirectoryDrive, LastLogoff, LastLogon, LogonHours, LogonServer, MaximumStorage, Name, NumberOfLogons, PasswordAge, PasswordExpires, PrimaryGroupId, Privileges, Profile,ScriptPath, SettingID, UnitsPerWeek,UserComment,USerId,UserType,Workstations /format:List
+netclient list full
+nicconfig list full
+
+###################################################### Other queries not used in IMF
+
+# Does not exist anymore ???
+#fsdir where "name='c:\windows'" get Archive, CreationDate, LastModified, Readable, Writeable, System, Hidden, Status
+# Not really useful
+#irq get Name, Status
+# No instance on test computers
+#job get Name, Owner, DaysOfMonth, DaysOfWeek, ElapsedTime, JobStatus, StartTime, Status
+
+# memlogical does not seem to exist anymore
+#memlogical get AvailableVirtualMemory, TotalPageFileSpace, TotalPhysicalMemory, TotalVirtualMemory
+
+# Seems pretty unuseful data
+#memphysical get Manufacturer, Model, SerialNumber, MaxCapacity, MemoryDevices
+
+# Seems pretty unuseful data
+#netclient get Caption, Name, Manufacturer, Status
+
+# No instance on test computers
+#netuse get Caption, DisplayType, LocalName, Name, ProviderName, Status
+
+# No instance on test computers
+#pagefileset get Name, InitialSize, MaximumSize
+
+# Unnecessary
+# printjob get Description, Document, ElapsedTime, HostPrintQueue, JobID, JobStatus, Name, Notify, Owner, TimeSubmitted, TotalPages
+
+# No instance on most computers
+#tapedrive get Name, Capabilities, Compression, Description, MediaType, NeedsCleaning, Status, StatusInfo
